@@ -50,6 +50,8 @@ exports.createEvent = async (req, res) => {
       totalSeats,
       ticketPrice,
       imageUrl,
+      availableSeats: totalSeats,
+      createdBy: req.user._id,
     });
     res.status(201).json(event);
   } catch (error) {
@@ -69,17 +71,22 @@ exports.updateEvent = async (req, res) => {
     imageUrl,
   } = req.body;
   try {
-      const event = await Event.findByIdAndUpdate(req.params.id,{
-    title,
-    description,
-    date,
-    location,
-    category,
-    totalSeats,
-    ticketPrice,
-    imageUrl}, { new: true });
-    if(!event){
-     return res.status(404).json({error:'Event not found'})   
+    const event = await Event.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        date,
+        location,
+        category,
+        totalSeats,
+        ticketPrice,
+        imageUrl,
+      },
+      { new: true },
+    );
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
     }
     res.json(event);
   } catch (error) {
@@ -90,12 +97,11 @@ exports.updateEvent = async (req, res) => {
 exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);
-    if(!event){
-        return res.status(404).json({error:'Event not found'})   
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
     }
-    res.json({message:"Event deleted successfully"})
-}
-  catch(error){
-    res.status(500).json({message:"Server Error"})
+    res.json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
-}
+};
